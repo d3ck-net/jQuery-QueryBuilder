@@ -273,6 +273,8 @@ QueryBuilder.DEFAULTS = {
 
     default_group_flags: {
         condition_readonly: false,
+        no_add_rule: false,
+        no_add_group: false,
         no_delete: false
     },
 
@@ -1026,6 +1028,12 @@ QueryBuilder.prototype.applyGroupFlags = function(group) {
     if (flags.condition_readonly) {
         group.$el.find('>' + Selectors.group_condition).prop('disabled', true)
             .parent().addClass('readonly');
+    }
+    if (flags.no_add_rule) {
+        group.$el.find(Selectors.add_rule).remove();
+    }
+    if (flags.no_add_group) {
+        group.$el.find(Selectors.add_group).remove();
     }
     if (flags.no_delete) {
         group.$el.find(Selectors.delete_group).remove();
@@ -1837,6 +1845,8 @@ QueryBuilder.prototype.parseGroupFlags = function(group) {
     if (group.readonly) {
         $.extend(flags, {
             condition_readonly: true,
+            no_add_rule: true,
+            no_add_group: true,
             no_delete: true
         });
     }
@@ -2313,7 +2323,7 @@ Node.prototype.moveAtEnd = function(target) {
         target = this.parent;
     }
 
-    this._move(target, target.length() - 1);
+    this._move(target, target.length() === 0 ? 0 : target.length() - 1);
 
     return this;
 };
